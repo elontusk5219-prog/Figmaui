@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Masonry from 'react-responsive-masonry';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 interface MasonryGridProps {
   children: ReactNode;
@@ -7,8 +7,12 @@ interface MasonryGridProps {
 
 export function MasonryGrid({ children }: MasonryGridProps) {
   return (
-    <Masonry columnsCount={3} gutter="20px">
-      {children}
-    </Masonry>
+    <ResponsiveMasonry
+      columnsCountBreakPoints={{ 350: 2, 750: 2, 900: 3 }}
+    >
+      <Masonry gutter="12px">
+        {children}
+      </Masonry>
+    </ResponsiveMasonry>
   );
 }

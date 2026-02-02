@@ -5,8 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { ScrollArea } from './ui/scroll-area';
-import { ArrowLeft, Send, Bot, Info } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { ArrowLeft, Send, Bot, Info, Shield } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -20,23 +19,23 @@ interface AgentChatPageProps {
   onBack: () => void;
 }
 
-// 模拟的 AI Agent 配置
+// 模拟的 AI Agent 配置 - 守门员
 const mockAgentConfig: AgentConfig = {
-  name: 'AI助手小明',
-  personality: '友好、专业、乐于助人',
+  name: '守门员 Agent',
+  personality: '严谨、礼貌、保护隐私',
   knowledge: [
-    '创作者的作品集和技术栈',
-    '创作者的工作经验和技能',
-    '如何联系创作者',
+    '创作者的作品集',
+    '合作意向初筛',
+    '基本信息介绍',
   ],
-  contactRules: '只有在访客表现出真诚的合作意向时，才会提供微信/邮箱等私密联系方式',
+  contactRules: '严格保护创作者隐私，仅在确认访客意图明确且匹配后提供联系方式',
 };
 
 export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: `你好！我是 ${creator.name} 的AI助手 ${mockAgentConfig.name}。我可以帮你了解 ${creator.name} 的作品和专业背景。有什么我可以帮助你的吗？`,
+      content: `你好！我是 ${creator.name} 的 AI 守门员。为了保护 ${creator.name} 的专注时间，我会先协助处理您的咨询。请问您有什么事吗？`,
       sender: 'agent',
       timestamp: new Date(),
     },
@@ -89,75 +88,65 @@ export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
     const input = userInput.toLowerCase();
 
     if (input.includes('作品') || input.includes('项目')) {
-      return `${creator.name} 目前在平台上发布了多个优秀作品，包括番茄钟工具、AI文案生成器等。这些作品涵盖了前端开发、工具应用等多个领域。你可以在他的主页查看完整的作品集。`;
-    }
-
-    if (input.includes('技术') || input.includes('技能') || input.includes('栈')) {
-      return `${creator.name} 精通 Web 开发技术栈，包括 React、Vue.js、TypeScript 等前端技术，同时也熟悉 Python、Node.js 等后端技术。他特别擅长开发创意型的小应用和工具。`;
+      return `${creator.name} 的作品包括番茄钟、AI工具等。我可以为您展示精选列表。`;
     }
 
     if (input.includes('联系') || input.includes('微信') || input.includes('邮箱') || input.includes('合作')) {
-      return `感谢你对 ${creator.name} 的关注！为了保护创作者的隐私，我需要了解更多关于你的合作意向。请问你具体希望在哪个方面与 ${creator.name} 合作呢？（例如：项目合作、技术交流、工作机会等）`;
+      return `收到您的合作意向。根据我的隐私保护规则，请您先提供一下您的公司/项目背景以及具体的合作需求，我会评估后决定是否转达给 ${creator.name}。`;
     }
 
-    if (input.includes('工作') || input.includes('经验') || input.includes('背景')) {
-      return `${creator.name} 是一位经验丰富的开发者，专注于创造有趣且实用的 Web 应用。他在用用平台上分享了许多优秀的开源项目，深受社区喜爱。`;
-    }
-
-    if (input.includes('你好') || input.includes('hi') || input.includes('hello')) {
-      return `你好！很高兴为你服务。我可以帮你了解 ${creator.name} 的作品、技能、工作经验等信息。你想了解什么呢？`;
+    if (input.includes('你好') || input.includes('hi')) {
+      return `你好！请直接说明您的来意，我会高效为您服务。`;
     }
 
     // 默认回复
-    return `我理解你的问题。关于 ${creator.name}，我可以为你介绍他的作品集、技术能力、以及如何与他取得联系。你最感兴趣的是哪个方面呢？`;
+    return `明白了。这方面的信息我可以帮您记录。还有其他需要我转达的吗？`;
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-[100dvh] flex flex-col bg-gray-50 fixed inset-0 z-50 overflow-hidden">
       {/* 顶部信息栏 */}
-      <div className="bg-white border-b border-gray-200 p-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200 p-3 pt-safe-top">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={onBack}>
-              <ArrowLeft className="w-4 h-4" />
+            <Button variant="ghost" size="icon" onClick={onBack} className="-ml-2">
+              <ArrowLeft className="w-5 h-5" />
             </Button>
-            <Avatar className="w-10 h-10">
-              <AvatarImage src={creator.avatar} alt={creator.name} />
-              <AvatarFallback>{creator.name[0]}</AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="w-9 h-9 border-2 border-white shadow-sm">
+                <AvatarImage src={creator.avatar} alt={creator.name} />
+                <AvatarFallback>{creator.name[0]}</AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-white"></div>
+            </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="font-semibold">{mockAgentConfig.name}</h2>
-                <Badge variant="secondary" className="text-xs">
-                  <Bot className="w-3 h-3 mr-1" />
-                  AI助手
+              <div className="flex items-center gap-1.5">
+                <h2 className="font-bold text-sm">{creator.name} 的守门员</h2>
+                <Badge variant="secondary" className="text-[10px] px-1 h-4 gap-0.5 bg-gradient-to-r from-blue-50 to-indigo-50 text-indigo-700 border-indigo-100">
+                  <Shield className="w-2.5 h-2.5" />
+                  AI Agent
                 </Badge>
               </div>
-              <p className="text-sm text-gray-600">代表 {creator.name}</p>
+              <p className="text-xs text-gray-500">通常在 1 分钟内回复</p>
             </div>
           </div>
-
-          <Button variant="outline" size="sm">
-            <Info className="w-4 h-4 mr-1" />
-            Agent信息
-          </Button>
         </div>
       </div>
 
       {/* 聊天区域 */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
-        <div className="max-w-4xl mx-auto space-y-4 pb-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4 bg-gray-50/50">
+        <div className="space-y-4 pb-4">
           {/* Agent 信息卡片 */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="mx-auto max-w-[90%] bg-white border border-gray-100 shadow-sm rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-              <div className="flex-1 text-sm">
-                <p className="font-medium text-blue-900 mb-2">关于这个 AI 助手</p>
-                <ul className="space-y-1 text-blue-800">
-                  <li>• 性格：{mockAgentConfig.personality}</li>
-                  <li>• 可以回答：{mockAgentConfig.knowledge.join('、')}</li>
-                  <li>• 联系规则：{mockAgentConfig.contactRules}</li>
-                </ul>
+              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                <Shield className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="flex-1 text-xs">
+                <p className="font-bold text-gray-900 mb-1">已开启隐私保护模式</p>
+                <p className="text-gray-600 leading-relaxed">
+                  我是 {creator.name} 的 AI 守门员。我会过滤骚扰信息，确保您的有效合作意向能直达创作者。
+                </p>
               </div>
             </div>
           </div>
@@ -169,34 +158,32 @@ export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
               className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`flex gap-3 max-w-[80%] ${
+                className={`flex gap-2 max-w-[85%] ${
                   message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'
                 }`}
               >
-                <Avatar className="w-8 h-8 flex-shrink-0">
+                <Avatar className="w-8 h-8 flex-shrink-0 border border-white shadow-sm">
                   {message.sender === 'agent' ? (
                     <>
                       <AvatarImage src={creator.avatar} alt={mockAgentConfig.name} />
-                      <AvatarFallback>
-                        <Bot className="w-4 h-4" />
-                      </AvatarFallback>
+                      <AvatarFallback><Bot className="w-4 h-4" /></AvatarFallback>
                     </>
                   ) : (
-                    <AvatarFallback>我</AvatarFallback>
+                    <AvatarFallback className="bg-gray-200">我</AvatarFallback>
                   )}
                 </Avatar>
 
                 <div
-                  className={`rounded-lg px-4 py-2 ${
+                  className={`rounded-2xl px-4 py-2.5 shadow-sm text-sm leading-relaxed ${
                     message.sender === 'user'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-white border border-gray-200'
+                      ? 'bg-gradient-to-r from-primary to-pink-500 text-white rounded-tr-sm'
+                      : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm'
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p>{message.content}</p>
                   <p
-                    className={`text-xs mt-1 ${
-                      message.sender === 'user' ? 'text-purple-100' : 'text-gray-500'
+                    className={`text-[10px] mt-1 text-right opacity-70 ${
+                      message.sender === 'user' ? 'text-white' : 'text-gray-400'
                     }`}
                   >
                     {message.timestamp.toLocaleTimeString('zh-CN', {
@@ -212,18 +199,16 @@ export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
           {/* 正在输入提示 */}
           {isTyping && (
             <div className="flex justify-start">
-              <div className="flex gap-3 max-w-[80%]">
+              <div className="flex gap-2 max-w-[80%]">
                 <Avatar className="w-8 h-8 flex-shrink-0">
-                  <AvatarImage src={creator.avatar} alt={mockAgentConfig.name} />
-                  <AvatarFallback>
-                    <Bot className="w-4 h-4" />
-                  </AvatarFallback>
+                  <AvatarImage src={creator.avatar} />
+                  <AvatarFallback><Bot className="w-4 h-4" /></AvatarFallback>
                 </Avatar>
-                <div className="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -233,10 +218,10 @@ export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
       </ScrollArea>
 
       {/* 输入区域 */}
-      <div className="bg-white border-t border-gray-200 p-4">
-        <div className="max-w-4xl mx-auto flex gap-2">
+      <div className="bg-white border-t border-gray-100 p-3 pb-safe-bottom">
+        <div className="flex gap-2 items-end">
           <Input
-            placeholder="输入消息..."
+            placeholder="发送消息..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => {
@@ -245,10 +230,15 @@ export function AgentChatPage({ creator, onBack }: AgentChatPageProps) {
                 handleSend();
               }
             }}
-            className="flex-1"
+            className="flex-1 bg-gray-50 border-gray-200 focus:bg-white transition-colors rounded-xl"
           />
-          <Button onClick={handleSend} disabled={!inputValue.trim() || isTyping}>
-            <Send className="w-4 h-4" />
+          <Button 
+            onClick={handleSend} 
+            disabled={!inputValue.trim() || isTyping}
+            size="icon"
+            className="bg-primary hover:bg-primary/90 rounded-xl shrink-0"
+          >
+            <Send className="w-5 h-5" />
           </Button>
         </div>
       </div>

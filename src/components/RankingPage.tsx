@@ -37,33 +37,33 @@ export function RankingPage({ apps, onBack, onAppClick }: RankingPageProps) {
     if (rank <= 3) {
       const colors = ['bg-gradient-to-r from-yellow-400 to-orange-500', 'bg-gradient-to-r from-gray-300 to-gray-400', 'bg-gradient-to-r from-orange-300 to-orange-400'];
       return (
-        <div className={`w-8 h-8 rounded-full ${colors[rank - 1]} flex items-center justify-center text-white font-bold shadow-md`}>
+        <div className={`w-6 h-6 rounded-full ${colors[rank - 1]} flex items-center justify-center text-white text-xs font-bold shadow-sm`}>
           {rank}
         </div>
       );
     }
     return (
-      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-semibold">
+      <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-semibold">
         {rank}
       </div>
     );
   };
 
   const RankingList = ({ apps: rankApps, metric }: { apps: WebApp[]; metric: 'likes' | 'views' | 'date' }) => (
-    <div className="space-y-3">
+    <div className="space-y-3 pb-8">
       {rankApps.map((app, index) => (
         <div
           key={app.id}
           onClick={() => onAppClick(app.id)}
-          className="bg-white rounded-xl p-4 hover:shadow-md transition-all cursor-pointer border border-gray-100 flex items-center gap-4"
+          className="bg-white rounded-xl p-3 flex items-center gap-3 active:scale-[0.99] transition-transform cursor-pointer border-b border-gray-50 last:border-0"
         >
           {/* 排名 */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 w-6 flex justify-center">
             {getRankBadge(index + 1)}
           </div>
 
           {/* 缩略图 */}
-          <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-100">
             <img
               src={app.thumbnail}
               alt={app.title}
@@ -73,48 +73,33 @@ export function RankingPage({ apps, onBack, onAppClick }: RankingPageProps) {
 
           {/* 内容 */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <h3 className="font-medium line-clamp-1 flex items-center gap-2">
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-medium text-sm line-clamp-1 flex items-center gap-1">
                 {app.title}
                 {index < 3 && getRankIcon(index + 1)}
               </h3>
-              {app.featured && (
-                <Badge variant="secondary" className="bg-red-50 text-primary border-red-200 flex-shrink-0">
-                  精选
-                </Badge>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 line-clamp-1 mb-2">{app.description}</p>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Avatar className="w-5 h-5">
-                  <AvatarImage src={app.author.avatar} alt={app.author.name} />
-                  <AvatarFallback className="text-xs">{app.author.name[0]}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm text-gray-600">{app.author.name}</span>
-              </div>
-
-              <div className="flex items-center gap-3 text-sm text-gray-500">
-                {metric === 'likes' && (
-                  <div className="flex items-center gap-1 font-semibold text-primary">
-                    <Heart className="w-4 h-4" />
+              {metric === 'likes' && (
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/5 px-1.5 py-0.5 rounded-full">
+                    <Heart className="w-3 h-3" />
                     <span>{app.likes}</span>
                   </div>
-                )}
-                {metric === 'views' && (
-                  <div className="flex items-center gap-1 font-semibold text-blue-600">
-                    <Eye className="w-4 h-4" />
+              )}
+              {metric === 'views' && (
+                  <div className="flex items-center gap-1 text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">
+                    <Eye className="w-3 h-3" />
                     <span>{app.views}</span>
                   </div>
-                )}
-                {metric === 'date' && (
-                  <div className="flex items-center gap-1 text-gray-600">
-                    <Calendar className="w-4 h-4" />
-                    <span>{app.createdAt}</span>
-                  </div>
-                )}
-              </div>
+              )}
+            </div>
+            
+            <p className="text-xs text-gray-500 line-clamp-1 mb-2">{app.description}</p>
+            
+            <div className="flex items-center gap-2">
+              <Avatar className="w-4 h-4">
+                <AvatarImage src={app.author.avatar} alt={app.author.name} />
+                <AvatarFallback className="text-[10px]">{app.author.name[0]}</AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-gray-500">{app.author.name}</span>
             </div>
           </div>
         </div>
@@ -124,30 +109,25 @@ export function RankingPage({ apps, onBack, onAppClick }: RankingPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 顶部导航 */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            返回
-          </Button>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
-            <h1 className="text-xl font-bold">排行榜</h1>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white mb-6 p-1 rounded-lg shadow-sm">
-            <TabsTrigger value="hot" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+      <div className="px-4 py-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full bg-white p-1 h-10 shadow-sm rounded-xl grid grid-cols-3 mb-4 sticky top-16 z-30">
+            <TabsTrigger 
+              value="hot" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg text-xs font-medium transition-all"
+            >
               🔥 热门榜
             </TabsTrigger>
-            <TabsTrigger value="views" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+            <TabsTrigger 
+              value="views" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg text-xs font-medium transition-all"
+            >
               👀 浏览榜
             </TabsTrigger>
-            <TabsTrigger value="new" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+            <TabsTrigger 
+              value="new" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg text-xs font-medium transition-all"
+            >
               ✨ 最新榜
             </TabsTrigger>
           </TabsList>

@@ -88,188 +88,145 @@ export function AppDetailPage({ app, onBack, onViewProfile }: AppDetailPageProps
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* 顶部操作栏 */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            返回
+      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div className="px-3 py-2 flex items-center justify-between">
+          <Button variant="ghost" size="icon" onClick={onBack} className="-ml-2">
+            <ArrowLeft className="w-5 h-5" />
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
-              variant={isLiked ? 'default' : 'outline'}
-              size="sm"
+              variant={isLiked ? 'default' : 'ghost'}
+              size="icon"
               onClick={handleLike}
+              className={isLiked ? "bg-primary text-white hover:bg-primary/90 rounded-full" : "rounded-full"}
             >
-              <Heart className={`w-4 h-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
-              {likes}
+              <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
             </Button>
-            <Button variant="outline" size="sm">
-              <MessageCircle className="w-4 h-4 mr-1" />
-              {comments.length}
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-1" />
-              分享
+            <Button variant="ghost" size="icon" onClick={handleShare} className="rounded-full">
+              <Share2 className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 左侧主内容 */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* 应用预览 */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <img
-                src={app.thumbnail}
-                alt={app.title}
-                className="w-full aspect-video object-cover"
-              />
-              {app.appType === 'link' && app.appUrl && (
-                <div className="p-4 bg-gray-50 border-t border-gray-200">
-                  <Button className="w-full" asChild>
-                    <a href={app.appUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      打开应用
-                    </a>
-                  </Button>
-                </div>
-              )}
-              {app.appType === 'code' && app.codeSnippet && (
-                <div className="p-4 bg-gray-50 border-t border-gray-200">
-                  <Button className="w-full" variant="outline" asChild>
-                    <a href={app.codeSnippet} target="_blank" rel="noopener noreferrer">
-                      <Code className="w-4 h-4 mr-2" />
-                      查看代码
-                    </a>
-                  </Button>
-                </div>
-              )}
-            </div>
+      <div className="space-y-4 pb-8">
+        {/* 应用预览 */}
+        <div className="bg-white">
+          <img
+            src={app.thumbnail}
+            alt={app.title}
+            className="w-full aspect-video object-cover"
+          />
+          <div className="p-4 grid grid-cols-2 gap-3">
+            {app.appType === 'link' && app.appUrl && (
+              <Button className="w-full bg-primary hover:bg-primary/90 shadow-md shadow-primary/20" asChild>
+                <a href={app.appUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  打开应用
+                </a>
+              </Button>
+            )}
+            {app.appType === 'code' && app.codeSnippet && (
+              <Button className="w-full" variant="outline" asChild>
+                <a href={app.codeSnippet} target="_blank" rel="noopener noreferrer">
+                  <Code className="w-4 h-4 mr-2" />
+                  查看代码
+                </a>
+              </Button>
+            )}
+          </div>
+        </div>
 
-            {/* 应用信息 */}
-            <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
-              <div>
-                <h1 className="text-2xl font-bold mb-2">{app.title}</h1>
-                <p className="text-gray-600">{app.description}</p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {app.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar>
-                    <AvatarImage src={app.author.avatar} alt={app.author.name} />
-                    <AvatarFallback>{app.author.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{app.author.name}</p>
-                    <p className="text-sm text-gray-500">@{app.author.username}</p>
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => onViewProfile(app.author.id)}
-                >
-                  <User className="w-4 h-4 mr-1" />
-                  查看主页
-                </Button>
-              </div>
-            </div>
-
-            {/* 评论区 */}
-            <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
-              <h2 className="text-xl font-semibold">评论 ({comments.length})</h2>
-
-              {/* 发表评论 */}
-              <div className="space-y-3">
-                <Textarea
-                  placeholder="说说你的想法..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  rows={3}
-                />
-                <div className="flex justify-end">
-                  <Button onClick={handleComment}>发表评论</Button>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* 评论列表 */}
-              <div className="space-y-4">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="flex gap-3">
-                    <Avatar>
-                      <AvatarImage src={comment.user.avatar} alt={comment.user.name} />
-                      <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{comment.user.name}</span>
-                        <span className="text-sm text-gray-500">{comment.createdAt}</span>
-                      </div>
-                      <p className="text-gray-700">{comment.content}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <button className="hover:text-pink-600 transition-colors flex items-center gap-1">
-                          <Heart className="w-3 h-3" />
-                          {comment.likes}
-                        </button>
-                        <button className="hover:text-blue-600 transition-colors">
-                          回复
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* 应用信息 */}
+        <div className="bg-white p-4 space-y-4">
+          <div>
+            <h1 className="text-xl font-bold mb-2">{app.title}</h1>
+            <p className="text-gray-600 text-sm leading-relaxed">{app.description}</p>
           </div>
 
-          {/* 右侧信息 */}
-          <div className="space-y-4">
-            <div className="bg-white rounded-lg shadow-sm p-4 space-y-3">
-              <h3 className="font-semibold">应用信息</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">发布时间</span>
-                  <span>{app.createdAt}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">应用类型</span>
-                  <span>
-                    {app.appType === 'link' && '在线应用'}
-                    {app.appType === 'code' && '代码片段'}
-                    {app.appType === 'package' && '组件包'}
-                    {app.appType === 'python' && 'Python脚本'}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">点赞数</span>
-                  <span>{likes}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">评论数</span>
-                  <span>{comments.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">分享数</span>
-                  <span>{app.shares}</span>
-                </div>
+          <div className="flex flex-wrap gap-2">
+            {app.tags.map((tag) => (
+              <Badge key={tag} variant="secondary" className="bg-gray-100 font-normal">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between py-3 border-t border-b border-gray-50">
+            <div className="flex items-center gap-3">
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={app.author.avatar} alt={app.author.name} />
+                <AvatarFallback>{app.author.name[0]}</AvatarFallback>
+              </Avatar>
+              <div onClick={() => onViewProfile(app.author.id)} className="cursor-pointer">
+                <p className="font-bold text-sm">{app.author.name}</p>
+                <p className="text-xs text-gray-500">@{app.author.username}</p>
               </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onViewProfile(app.author.id)}
+              className="rounded-full text-xs h-8"
+            >
+              <User className="w-3 h-3 mr-1" />
+              主页
+            </Button>
+          </div>
+        </div>
+
+        {/* 评论区 */}
+        <div className="bg-white p-4 space-y-5">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            评论 <span className="text-gray-400 text-sm font-normal">{comments.length}</span>
+          </h2>
+
+          {/* 发表评论 */}
+          <div className="flex gap-3">
+             <Avatar className="w-8 h-8">
+                <AvatarFallback>我</AvatarFallback>
+             </Avatar>
+             <div className="flex-1 space-y-2">
+                <Textarea
+                  placeholder="说点好听的..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  rows={2}
+                  className="bg-gray-50 border-none resize-none focus:ring-1 focus:ring-primary/20 text-sm"
+                />
+                <div className="flex justify-end">
+                  <Button onClick={handleComment} size="sm" className="h-8 text-xs bg-primary hover:bg-primary/90">发送</Button>
+                </div>
+             </div>
+          </div>
+
+          {/* 评论列表 */}
+          <div className="space-y-6">
+            {comments.map((comment) => (
+              <div key={comment.id} className="flex gap-3">
+                <Avatar className="w-8 h-8 mt-1">
+                  <AvatarImage src={comment.user.avatar} alt={comment.user.name} />
+                  <AvatarFallback>{comment.user.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-sm text-gray-700">{comment.user.name}</span>
+                    <button className="flex items-center gap-1 text-gray-400 hover:text-pink-500 transition-colors">
+                       <Heart className="w-3 h-3" />
+                       <span className="text-xs">{comment.likes}</span>
+                    </button>
+                  </div>
+                  <p className="text-gray-800 text-sm">{comment.content}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xs text-gray-400">{comment.createdAt}</span>
+                    <button className="text-xs text-gray-500 font-medium">回复</button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

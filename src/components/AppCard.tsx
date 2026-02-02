@@ -1,5 +1,5 @@
 import { WebApp } from '../types';
-import { Heart, MessageCircle, Share2, ExternalLink, Code, Package, FileCode } from 'lucide-react';
+import { Heart, MessageCircle, ExternalLink, Code, Package, FileCode } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 
@@ -22,23 +22,10 @@ export function AppCard({ app, onClick }: AppCardProps) {
     }
   };
 
-  const getAppTypeLabel = () => {
-    switch (app.appType) {
-      case 'link':
-        return '在线应用';
-      case 'code':
-        return '代码片段';
-      case 'package':
-        return '组件包';
-      case 'python':
-        return 'Python脚本';
-    }
-  };
-
   return (
     <div
       onClick={onClick}
-      className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer border border-gray-100"
+      className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100"
     >
       {/* 缩略图 */}
       <div className="relative overflow-hidden aspect-[4/3]">
@@ -47,51 +34,45 @@ export function AppCard({ app, onClick }: AppCardProps) {
           alt={app.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-2 right-2 flex gap-2">
+        <div className="absolute top-1.5 right-1.5 flex gap-1">
           {app.featured && (
-            <Badge className="bg-primary text-white border-0 shadow-md">
+            <Badge className="bg-primary/90 text-white border-0 shadow-sm text-[10px] px-1.5 h-5">
               精选
             </Badge>
           )}
-          <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm">
-            <span className="mr-1">{getAppTypeIcon()}</span>
-            {getAppTypeLabel()}
-          </Badge>
+        </div>
+        <div className="absolute bottom-1.5 left-1.5">
+           <div className="bg-black/50 backdrop-blur-md rounded-full px-2 py-0.5 flex items-center gap-1 text-[10px] text-white">
+              {getAppTypeIcon()}
+              <span>
+                {app.appType === 'link' && 'Link'}
+                {app.appType === 'code' && 'Code'}
+                {app.appType === 'package' && 'Pkg'}
+                {app.appType === 'python' && 'Py'}
+              </span>
+           </div>
         </div>
       </div>
 
       {/* 内容 */}
-      <div className="p-4">
-        <h3 className="font-semibold mb-2 line-clamp-1">{app.title}</h3>
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{app.description}</p>
-
-        {/* 标签 */}
-        <div className="flex flex-wrap gap-1 mb-3">
-          {app.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs bg-gray-50">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+      <div className="p-3">
+        <h3 className="font-semibold mb-1 text-sm line-clamp-1">{app.title}</h3>
+        <p className="text-xs text-gray-500 mb-2 line-clamp-2">{app.description}</p>
 
         {/* 作者和互动数据 */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <Avatar className="w-6 h-6">
+        <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+          <div className="flex items-center gap-1.5">
+            <Avatar className="w-5 h-5">
               <AvatarImage src={app.author.avatar} alt={app.author.name} />
-              <AvatarFallback>{app.author.name[0]}</AvatarFallback>
+              <AvatarFallback className="text-[10px]">{app.author.name[0]}</AvatarFallback>
             </Avatar>
-            <span className="text-sm text-gray-700">{app.author.name}</span>
+            <span className="text-xs text-gray-600 truncate max-w-[60px]">{app.author.name}</span>
           </div>
 
-          <div className="flex items-center gap-3 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <Heart className="w-4 h-4 text-primary" />
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <div className="flex items-center gap-0.5">
+              <Heart className="w-3 h-3 text-primary" />
               <span>{app.likes}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="w-4 h-4" />
-              <span>{app.comments}</span>
             </div>
           </div>
         </div>
