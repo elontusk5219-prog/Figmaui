@@ -19,7 +19,7 @@ export interface WebApp {
   views: number;
   tags: string[];
   createdAt: string;
-  appType: 'link' | 'code' | 'package' | 'python';
+  appType: 'link' | 'code' | 'package';
   appUrl?: string;
   codeSnippet?: string;
   featured?: boolean;

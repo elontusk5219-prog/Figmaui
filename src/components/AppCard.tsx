@@ -1,5 +1,5 @@
 import { WebApp } from '../types';
-import { Heart, MessageCircle, ExternalLink, Code, Package, FileCode } from 'lucide-react';
+import { Heart, ExternalLink, Code, Package } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 
@@ -17,8 +17,6 @@ export function AppCard({ app, onClick }: AppCardProps) {
         return <Code className="w-3 h-3" />;
       case 'package':
         return <Package className="w-3 h-3" />;
-      case 'python':
-        return <FileCode className="w-3 h-3" />;
     }
   };
 
@@ -48,7 +46,6 @@ export function AppCard({ app, onClick }: AppCardProps) {
                 {app.appType === 'link' && 'Link'}
                 {app.appType === 'code' && 'Code'}
                 {app.appType === 'package' && 'Pkg'}
-                {app.appType === 'python' && 'Py'}
               </span>
            </div>
         </div>
